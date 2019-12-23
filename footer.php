@@ -1,9 +1,79 @@
-<footer class="footer">
-        <div class="text-center">
-                <!--/* This template is released under the Creative Commons Attribution 3.0 License. Please keep the attribution link below when using for your own project. Thank you for your support. :) If you'd like to use the template without the attribution, you can check out other commercial license options via our website: themes.3rdwavemedia.com */-->
-                <small class="copyright">Designed with <i class="fas fa-heart"></i> by <a href="#">Lê Hà Giang</small>
-        </div><!--//container-->
-</footer><!--//footer-->
-  <!-- Bootstrap core JavaScript -->
-  <script src="assets/plugins/jquery-3.3.1.min.js"></script>
-  <script src="assets/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+ <!-- Footer
+    ================================================= -->
+    <footer id="footer">
+      <div class="container">
+      	<div class="row">
+          <div class="footer-wrapper">
+            <div class="col-md-2 col-sm-2">
+              
+              <ul class="list-inline social-icons">
+              	<li><a href="#"><i class="icon ion-social-facebook"></i></a></li>
+              	<li><a href="#"><i class="icon ion-social-twitter"></i></a></li>
+              	<li><a href="#"><i class="icon ion-social-googleplus"></i></a></li>
+              
+              </ul>
+            </div>
+           
+            <div class="col-md-5 col-sm-5">
+              <h5>Thông tin trang</h5>
+              <p>
+
+
+
+              </p>
+            </div>
+            <div class="col-md-5 col-sm-5">
+              <h5>Liên hệ</h5>
+              <ul class="contact">
+                <li><i class="icon ion-ios-telephone-outline"></i>090000000</li>
+                <li><i class="icon ion-ios-email-outline"></i>info@abc.com</li>
+                <li><i class="icon ion-ios-location-outline"></i>227 Nguyễn Văn Cừ,Quận 5, TP HCM</li>
+              </ul>
+            </div>
+          </div>
+      	</div>
+      </div>
+      <div class="copyright">
+        <p>Copyright @Lê Hà Giang</p>
+      </div>
+		</footer>
+    
+    <!--preloader-->
+    <div id="spinner-wrapper">
+      <div class="spinner"></div>
+    </div>
+    
+    <!-- Scripts
+    ================================================= -->
+  
+    <script src="js/jquery-3.1.1.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/jquery.sticky-kit.min.js"></script>
+    <script src="js/jquery.scrollbar.min.js"></script>
+    <script src="js/script.js"></script>
+    <script src="js/bootstrap-datetimepicker.min.js"></script>
+    <script src="js/bootstrap-notify.min.js"></script>
+    <script type="text/javascript">
+        $(".form_datetime").datetimepicker({
+                format: "dd MM yyyy"
+        });
+        function Notify(title,msg,type,icon)
+        {
+          $.notify({
+            // options
+            message: msg,
+            icon: icon,
+	          title: title,
+          },{
+            // settings
+            type: type,
+            delay: 3000,
+	          timer: 2000,
+            animate: {
+              enter: 'animated fadeInDown',
+              exit: 'animated fadeOutUp'
+            },
+          });
+
+        }
+    </script> 

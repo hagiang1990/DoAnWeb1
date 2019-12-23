@@ -33,11 +33,7 @@
         <?php require_once("header.php") ?>
     </head>
 <body>
-<div class="wrapper">
-        
-        <?php include("menu.php") ?>
-        <div class="main-wrapper">
-            <div class="row">
+<div class="row">
                 <div class="col-md-12">
                     <div class="container bg-light">	
                         <?php if(!empty($msg) ):?>
@@ -47,8 +43,6 @@
                     </div>
                 </div>
             </div>
-        </div><!--//main-body-->
-    </div>
     <?php require_once("footer.php") ?>
 </body>
 </html>

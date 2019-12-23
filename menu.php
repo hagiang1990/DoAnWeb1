@@ -1,61 +1,84 @@
-<div class="sidebar-wrapper">
-    <div class="profile-container">
-        <a href="index.php"><i class="fas fa-2x fa-home"></i> Trang chủ</a>
-        <br />
-        <br />
-        <?php if(!empty($_SESSION["USERID"])) :?>
-               
-                <img class="profile img img-responsive img-thumbnail" width="200" height="200" src="img/<?php echo $currentUser["UrlImage"]; ?>" alt="<?php echo $currentUser["FullName"]; ?>" />
-                <h1 class="name"><?php echo $currentUser["FullName"]; ?></h1>
-                <h3 class="tagline"><?php echo $currentUser["Email"]; ?></h3>
-                <br />
-                <button onclick="location.href='logout.php'" type="button" class="btn btn-default"><i class="fas sign-out-alt"></i> Đăng Xuất</button>
-        <?php else:?>  
-            <button onclick="location.href='login.php'" type="button" id="btnLogin" class="btn btn-default"><i class="fas sign-in-alt"></i> Đăng nhập</button>
-            <br />
-            <br />
-            <button  type="button" id="btnRegister" class="btn btn-default" onclick="location.href='register.php'"><i class="fas fa-key"></i> Đăng ký</button>
-        <?php endif;?>	
-    </div><!--//profile-container--> 
-    <?php if(!empty($_SESSION["USERID"])) :?>
-        <div class="contact-container container-block">
-            <ul class="list-unstyled contact-list">
-                <li class="email"><i class="fas fa-edit"></i><a href="info.php">Chỉnh sửa thông tin</a></li>
-                <li class="website"><i class="fas fa-globe"></i><a href="newfeed.php" target="_blank">Đăng bài</a></li>
-            </ul>
-        </div><!--//contact-container"-->
-     <?php endif;?>	
-        
-         <div class="carousel slide education-container container-block text-center"  data-ride="carousel">
-                <h2 class="container-block-title">Hình ảnh</h2>
-                 <!-- The slideshow -->
-                <div class="carousel-inner">
-                    <div class="carousel-item active">
-                        <img class="img img-thumbnail" src="img/background.jpg" alt="" height="150" width="100%">
-                    </div>
-                    <div class="carousel-item">
-                        <img class="img img-thumbnail" src="img/hagiang1.jpg" alt="" height="150" width="100%" >
-                    </div>
+ <!-- Header
+    ================================================= -->
+	<header id="header">
+      <nav class="navbar navbar-default navbar-fixed-top menu">
+        <div class="container">
 
-                </div>
-            </div>
-            
-           <!-- <div class="languages-container container-block">
-                <h2 class="container-block-title">Languages</h2>
-                <ul class="list-unstyled interests-list">
-                    <li>English <span class="lang-desc">(Native)</span></li>
-                    <li>French <span class="lang-desc">(Professional)</span></li>
-                    <li>Spanish <span class="lang-desc">(Professional)</span></li>
+          <!-- Brand and toggle get grouped for better mobile display -->
+          <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+              <span class="sr-only">Toggle navigation</span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="index.php"><img src="images/logo.png" alt="logo" style="max-height: 35px;" /></a>
+          </div>
+
+          <!-- Collect the nav links, forms, and other content for toggling -->
+          <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1" style="text-align:center">
+            <ul class="nav navbar-nav navbar-right main-menu">
+              <!--<li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Home <span><img src="images/down-arrow.png" alt="" /></span></a>
+                <ul class="dropdown-menu newsfeed-home">
+                  <li><a href="index.html">Landing Page 1</a></li>
+                  <li><a href="index-register.html">Landing Page 2</a></li>
                 </ul>
-            </div>
-            
-            <div class="interests-container container-block">
-                <h2 class="container-block-title">Interests</h2>
-                <ul class="list-unstyled interests-list">
-                    <li>Climbing</li>
-                    <li>Snowboarding</li>
-                    <li>Cooking</li>
+              </li>
+              <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Newsfeed <span><img src="images/down-arrow.png" alt="" /></span></a>
+                <ul class="dropdown-menu newsfeed-home">
+                  <li><a href="newsfeed.html">Newsfeed</a></li>
+                  <li><a href="newsfeed-people-nearby.html">Poeple Nearly</a></li>
+                  <li><a href="newsfeed-friends.html">My friends</a></li>
+                  <li><a href="newsfeed-messages.html">Chatroom</a></li>
+                  <li><a href="newsfeed-images.html">Images</a></li>
+                  <li><a href="newsfeed-videos.html">Videos</a></li>
                 </ul>
-            </div> -->
-            
-</div><!--//sidebar-wrapper-->
+              </li>
+              <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Timeline <span><img src="images/down-arrow.png" alt="" /></span></a>
+                <ul class="dropdown-menu login">
+                  <li><a href="timeline.html">Timeline</a></li>
+                  <li><a href="timeline-about.html">Timeline About</a></li>
+                  <li><a href="timeline-album.html">Timeline Album</a></li>
+                  <li><a href="timeline-friends.html">Timeline Friends</a></li>
+                  <li><a href="edit-profile-basic.html">Edit: Basic Info</a></li>
+                  <li><a href="edit-profile-work-edu.html">Edit: Work</a></li>
+                  <li><a href="edit-profile-interests.html">Edit: Interests</a></li>
+                  <li><a href="edit-profile-settings.html">Account Settings</a></li>
+                  <li><a href="edit-profile-password.html">Change Password</a></li>
+                </ul>
+              </li>
+              <li class="dropdown">
+                <a href="#" class="dropdown-toggle pages" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">All Pages <span><img src="images/down-arrow.png" alt="" /></span></a>
+                <ul class="dropdown-menu page-list">
+                  <li><a href="index.html">Landing Page 1</a></li>
+                  <li><a href="index-register.html">Landing Page 2</a></li>
+                  <li><a href="newsfeed.html">Newsfeed</a></li>
+                  <li><a href="newsfeed-people-nearby.html">Poeple Nearly</a></li>
+                  <li><a href="newsfeed-friends.html">My friends</a></li>
+                  <li><a href="newsfeed-messages.html">Chatroom</a></li>
+                  <li><a href="newsfeed-images.html">Images</a></li>
+                  <li><a href="newsfeed-videos.html">Videos</a></li>
+                  <li><a href="timeline.html">Timeline</a></li>
+                  <li><a href="timeline-about.html">Timeline About</a></li>
+                  <li><a href="timeline-album.html">Timeline Album</a></li>
+                  <li><a href="timeline-friends.html">Timeline Friends</a></li>
+                  <li><a href="edit-profile-basic.html">Edit Profile</a></li>
+                  <li><a href="contact.html">Contact Us</a></li>
+                </ul>
+              </li>-->
+              <li class="dropdown"><a href="logout.php"><i class="icon ion-log-out"></i> Đăng xuất</a></li>
+            </ul>
+            <form class="navbar-form  hidden-sm" style="display: inline-block;">
+              <div class="form-group">
+                <i class="icon ion-android-search"></i>
+                <input type="text" class="form-control" placeholder="Tìm kiếm bạn bè.................">
+              </div>
+            </form>
+          </div><!-- /.navbar-collapse -->
+        </div><!-- /.container -->
+      </nav>
+    </header>
+    <!--Header End-->

@@ -10,12 +10,12 @@ require 'module/phpmailer/SMTP.php';
 $EMAIL_FROM     = 'zenkiben@gmail.com';
 $EMAIL_NAME     = 'Admin';
 $EMAIL_PASSWORD = 'trungtan1991,./';
-$vHost = "http://localhost/webcanhan/";
+$vHost = "http://localhost/doanweb1/";
 
 function login($username,$pwd)
 {
 	global $db;
-    $stmt=$db->prepare("SELECT * FROM users WHERE UserName  = ? AND Pwd = ?");
+    $stmt=$db->prepare("SELECT * FROM users WHERE Email  = ? AND Pwd = ?");
     $stmt->execute(array($username,$pwd));
     return  $stmt->fetch(PDO::FETCH_ASSOC);
 }
@@ -74,13 +74,13 @@ function getPage()
     $page=$parts[0];
     return $page;
 }
-function register($UserName,$Pwd,$FullName,$UrlImage,$Email)
+function register($Phone,$Pwd,$FullName,$UrlImage,$Email)
 {
     global $db;
     $code = generateRandomString(5);
-    $stmt=$db->prepare("INSERT INTO users (UserName,Pwd,FullName,UrlImage,Email,IsActived,ActivedCode) VALUES(?,?,?,?,?,?,?)");
-    $stmt->execute(array($UserName,$Pwd,$FullName,$UrlImage,$Email,"false",$code));
-    sendEmail($Email,$FullName,'Kích hoạt tài khoản','Click vào: <strong><a href="http://localhost/webcanhan/'  .'actived.php?code=' .$code .'&email=' .$Email .'"> đây </a> để kích hoạt</strong> ');
+    $stmt=$db->prepare("INSERT INTO users (FullName,Pwd,Phone,ImageUrl,Email,IsActived,ActivedCode) VALUES(?,?,?,?,?,?,?)");
+    $stmt->execute(array($FullName,$Pwd,$Phone,$UrlImage,$Email,"false",$code));
+    sendEmail($Email,$FullName,'Kích hoạt tài khoản','Click vào: <strong><a href="http://localhost/doanweb1/'  .'actived.php?code=' .$code .'&email=' .$Email .'"> đây </a> để kích hoạt</strong> ');
     return $newUserId=$db->lastInsertId();
 }
 function change_password($newPassword,$id)
@@ -91,24 +91,17 @@ function change_password($newPassword,$id)
     return $stmt->execute(array($hashPassword,$id));
 }
 
-function UpdateUser($UserID,$FullName, $Email)
+function UpdateUser($UserID,$FullName, $Email,$Phone)
 {
     global $db;
-    $stmt=$db->prepare("UPDATE Users SET FullName=? , Email = ?  WHERE UserID=?");
-    return $stmt->execute(array($FullName, $Email,$UserID));
+    $stmt=$db->prepare("UPDATE Users SET FullName=? , Email = ? , Phone=? WHERE UserID=?");
+    return $stmt->execute(array($FullName, $Email,$Phone,$UserID));
 }
-function UpdateUser1($UserID,$FullName, $Email, $ImgUrl)
+function UpdateUser1($UserID,$FullName, $Email, $ImgUrl,$Phone)
 {
     global $db;
-    $stmt=$db->prepare("UPDATE Users SET FullName=? , Email = ? , UrlImage= ? WHERE UserID=?");
-    return $stmt->execute(array($FullName, $Email, $ImgUrl,$UserID));
-}
-function getNewFeed()
-{
-    global $db;
-    $stmt=$db->query("SELECT p.*,u.displayName FROM newfeed p,user u WHERE p.idUser=u.id ORDER BY p.time DESC");
-    $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-    return $result;
+    $stmt=$db->prepare("UPDATE Users SET FullName=? , Email = ? , ImageUrl= ? , Phone=? WHERE UserID=?");
+    return $stmt->execute(array($FullName, $Email, $ImgUrl,$Phone,$UserID));
 }
 
 function resizeImage($filename, $max_width, $max_height)
@@ -190,4 +183,106 @@ function getExtension($str) {
     $l = strlen($str) - $i;
     $ext = substr($str,$i+1,$l);
     return $ext;
+}
+function LoadNewFeed($UserID,$pageNum,$limit)
+{
+    global $db;
+    $start=($pageNum-1)*$limit;
+    $stmt=$db->prepare("CALL sp_LoadNewFeed(?,?,?)");
+    $stmt->execute(array($UserID,$start,$limit));
+    return  $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
+function GetNewFeedByID($NewFeedID) {
+    global $db;
+    $stmt = $db->prepare("SELECT * FROM NewFeeds WHERE NewFeedID = ?");
+    $stmt->execute(array($NewFeedID));
+    return $stmt->fetch(PDO::FETCH_ASSOC);
+}
+function AddNewFeed($UserID, $content, $ImageUrl,$NewFeedType)
+{
+    global $db;
+    $stmt=$db->prepare("INSERT INTO NewFeeds (NewFeedContent,UrlImage,IsPrivate,CreatedUser) VALUES(?,?,?,?)");
+    $stmt->execute(array($content, $ImageUrl,$NewFeedType,$UserID));
+    $newNewFeedID=$db->lastInsertId();
+    return GetNewFeedByID($newNewFeedID);
+}
+function DelNewFeed($NewFeedID)
+{
+    global $db;
+    $stmt=$db->prepare("UPDATE NewFeeds SET IsDeleted = 1 WHERE NewFeedID = ? ");
+    return $stmt->execute(array($NewFeedID));
+}
+function AddLike($NewFeedID,$UserID)
+{
+    global $db;
+    $isLike = CheckLike($UserID,$NewFeedID);
+   
+    if(intVal($isLike["NumLike"]) > 0)
+    {
+        DeleteLike($NewFeedID,$UserID);
+    }
+    else
+    {
+        $stmt=$db->prepare("INSERT INTO newfeed_like (NewFeedID,UserID) VALUES(?,?)");
+        $stmt->execute(array($NewFeedID,$UserID));
+    }
+    return GetCountLikeNewFeed($NewFeedID);
+}
+function DeleteLike($NewFeedID,$UserID)
+{
+    global $db;
+    $stmt=$db->prepare("DELETE FROM newfeed_like WHERE NewFeedID = ? AND UserID  = ? ");
+    return $stmt->execute(array($NewFeedID,$UserID));
+
+}
+function CheckLike($UserID,$NewFeedID)
+{
+    global $db;
+    $stmt=$db->prepare("SELECT COUNT(*) as NumLike FROM newfeed_like WHERE UserID  = ? AND NewFeedID = ?");
+    $stmt->execute(array($UserID,$NewFeedID));
+    return $stmt->fetch(PDO::FETCH_ASSOC);
+}
+function GetCountLikeNewFeed($NewFeedID)
+{
+    global $db;
+    $stmt=$db->prepare("SELECT COUNT(*) as NumLike FROM newfeed_like WHERE NewFeedID = ?");
+    $stmt->execute(array($NewFeedID));
+    return $stmt->fetch(PDO::FETCH_ASSOC);
+}
+function GetCountFriend($UserID)
+{
+    global $db;
+    $stmt=$db->prepare("SELECT COUNT(*) as NumFriend FROM users_friends WHERE (UserID = ? OR FriendID = ? ) AND IsAccept = 1 ");
+    $stmt->execute(array($UserID,$UserID));
+    $result = $stmt->fetch(PDO::FETCH_ASSOC);
+    return intVal($result["NumFriend"]);
+}
+//Các hàm xử lý của bảng comment
+function GetCommentByNewFeed($NewFeedID)
+{
+    global $db;
+    $stmt=$db->prepare("SELECT n.*, s.FullName , s.ImageUrl FROM comments as n join users as s on n.CreatedUser = s.UserID  WHERE n.NewFeedID = ? AND n.IsDeleted = 0 ORDER BY n.CreatedDate");
+    $stmt->execute(array($NewFeedID));
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
+function GetCommentByID($CommentID)
+{
+
+    global $db;
+    $stmt=$db->prepare("SELECT n.*, s.FullName , s.ImageUrl FROM comments as n join users as s on n.CreatedUser = s.UserID  WHERE n.CommentID = ?");
+    $stmt->execute(array($CommentID));
+    return $stmt->fetch(PDO::FETCH_ASSOC);
+}
+function AddComment($NewFeedID, $UserID, $CommentContent)
+{
+    global $db;
+    $stmt=$db->prepare("INSERT INTO comments (CommentContent,NewFeedID,CreatedUser) VALUES(?,?,?)");
+    $stmt->execute(array( $CommentContent,$NewFeedID,$UserID));
+    return $db->lastInsertId();
+}
+function DelComment($CommentID)
+{
+    global $db;
+    $stmt=$db->prepare("UPDATE comments SET IsDeleted = 1 WHERE CommentID = ? ");
+    return $stmt->execute(array($CommentID));
 }

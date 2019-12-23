@@ -4,6 +4,6 @@
 	unset($_SESSION["FULLNAME"]);  
 	$currentUser = null; 
 
-	header('Location: index.php'); 
+	header('Location: login.php'); 
 	exit();
 ?>
