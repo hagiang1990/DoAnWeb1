@@ -24,7 +24,7 @@
                         <div class="col-md-3 static">
                             <div class="profile-card">
                                 <img src="img/<?php echo $currentUser["ImageUrl"]?>" alt="user" class="profile-photo" />
-                                <h5><a href="timeline.php?u=<?php echo $currentUser["UserID"]?>" class="text-white"><?php echo $currentUser["FullName"];?></a></h5>
+                                <h5><a href="info.php" class="text-white"><?php echo $currentUser["FullName"];?></a></h5>
                                 <a href="#" class="text-white"><i class="ion ion-android-person-add"></i> <?php echo $CountFriend;?> bạn</a>
                             </div>
                             <!--profile card ends-->
@@ -118,7 +118,7 @@
                             var formData = new FormData();
                             formData.append("NewFeedContent",newFeedContent);
                             formData.append("NewFeedType",newFeedType);
-                            formData.append('fImage', ($('#txtImage')[0].files.lenght > 0 ? $('#txtImage')[0].files[0] : "")); 
+                            formData.append('fImage',  $('#txtImage')[0].files[0]); 
                             formData.append("Method","ADD");
                             formData.append("UserID","<?php echo $UserID;?>")
                             $.ajax({
@@ -249,10 +249,11 @@
                         {
                             $.ajax({
                                 url: 'newfeeds.php',
-                                data: {"UserID": UserID,"NewFeedID": newFeedID,"Method":"ADDCM" , "CommentContent": content},
+                                data: {"UserID": UserID,"NewFeedID": newFeedID,"Method":"CM" , "CommentContent": content},
                                 type: 'POST',
                                 success: function(data)
                                 {
+                                    console.log(data);
                                     if(data > 0)
                                     {
                                         $("input[data-id='"+ newFeedID +"']").val("");

@@ -42,8 +42,12 @@ else
                 $user  = findUserByEmail($Email);
                 if(isset($user)){
                     $newID = register($Phone,$Pwd,$FullName,"noavatar.png",$Email);
-                    if($newID > 0)
-                        $isRegister = true;
+                    if($newID > 0){
+                       $isRegister = true;
+                       $msg ="Đăng ký thành công! Hãy kiểm tra email để nhận đường dẫn kích hoạt.";
+                    }
+                        
+
                 }
                 else
                     $msg = "Email đã tồn tại!";
@@ -170,7 +174,7 @@ else
                         <input id="pwd" class="form-control input-group-lg" type="password" name="pwd" title="Nhập mật khẩu" placeholder="Nhập mật khẩu"/>
                       </div>
                     </div>
-                    <p><a href="#">Quên mật khẩu</a></p>
+                    <p><a href="forgetpass.php" target="_blank">Quên mật khẩu</a></p>
                     <button class="btn btn-primary" name="btnLogin">Đăng nhập</button>
                   </form><!--Login Form Ends--> 
                  

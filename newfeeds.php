@@ -52,7 +52,7 @@
         $result = Del($NewFeedID);
         echo $result;
     }
-    if($function == "ADDCM")
+    if($function == "CM")
     {
         $NewFeedID = $_POST["NewFeedID"];
         $UserID = $_POST["UserID"];
@@ -60,7 +60,22 @@
         $result = AddComment($NewFeedID, $UserID, $CommentContent);
         echo $result;
     }
-    
+    if($function == "AF")
+    {
+        $UserID = $_POST["UserID"];
+        $FriendID = $_POST["FriendID"];
+        $result =AddFriend($UserID, $FriendID);
+        return $result;
+    }
+    if($function == "ACCEPTF")
+    {
+        $UserID = $_POST["UserID"];
+        $FriendID = $_POST["FriendID"];
+        $NotificationID = $_POST["ID"];
+        $result =AcceptFriend($NotificationID,$UserID, $FriendID);
+        return $result;
+    }
+
 
 
     function Add($UserID,$content, $ImageUrl,$NewFeedType)

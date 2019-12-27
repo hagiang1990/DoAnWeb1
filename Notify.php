@@ -17,14 +17,39 @@
                     </p>
                     <p class="text-muted"><?php echo date_format(date_create($item["CreatedDate"]),"d/m/Y H:i:s");?></p>
                     <?php if(intVal($item["NotificationType"]) == 0){?>
-                        <div class="btn-group" role="group" aria-label="Basic example">
-                            <button type="button" class="btn btn-primary">Đồng ý</button>
-                            <button type="button" class="btn btn-secondary">Từ chối</button>
-                                                  
+                        <div class="btn-group mr-2" role="group" aria-label="Basic example">
+                                <button type="button" class="btn  btn-info" id="btnAccept" onclick="AcceptFriend(<?php echo $item["NotificationID"] ?>,<?php echo $item["ToUserID"] ?>,<?php echo $item["FromUserID"] ?>)"><i class="glyphicon glyphicon-ok-circle"></i></button>
+                                <button type="button" class="btn btn-danger" id="btnNotAccept" onclick="UnAcceptFriend(<?php echo $item["NotificationID"] ?>,<?php echo $item["ToUserID"] ?>,<?php echo $item["FromUserID"] ?>)" ><i class="glyphicon glyphicon-remove-circle"></i></button>
+                                                    
                         </div>
+                        
                     <?php }?>
                 </div>
             </div>
         <?php }?>                                
     </div>
 </div>
+<script>
+function AcceptFriend(ID,UserID,FriendID)
+                    {
+                        $.ajax({
+                            url: 'newfeeds.php',
+                            data: {"ID":ID,"UserID": UserID,"FriendID":FriendID,"Method":"ACCEPTF"},
+                            type: 'POST',
+                            success: function(data)
+                            {
+                                 
+                                 //if(data)
+                                 //{
+                                   //Notify("Thông báo: ","<strong>Gửi lời mời thành công</strong>","info","glyphicon glyphicon-bullhorn")
+                                    location.reload();
+                                 //}
+                                 //else
+                                 //   Notify("Thông báo: ","<strong>Gửi lời mời thất bại</strong>","info","glyphicon glyphicon-bullhorn")
+                            },
+                            error: function() {
+                                Notify("Thông báo: ","<strong>Bạn không xóa bản tin này</strong>","info","glyphicon glyphicon-bullhorn")
+                            }
+                        });
+                    }
+</script>

@@ -85,7 +85,7 @@
               </div>
               <div class="col-md-9">
                 <ul class="list-inline profile-menu">
-                  <li><a href="timeline.php">Dòng thời gian</a></li>
+                  <li><a href="timeline.php?u=<?php echo $UserID?>">Dòng thời gian</a></li>
                   <li><a href="info.php" class="active">Thông tin</a></li>
                  
                   <li><a href="friends.php">Bạn bè</a></li>
@@ -103,14 +103,14 @@
             <div class="profile-info">
               <img src="img/<?php echo $currentUser["ImageUrl"]?>" alt="" class="img-responsive profile-photo" />
               <h4><?php echo $currentUser["FullName"] ?></h4>
-              <p class="text-muted"><?php echo $currentUser["Phone"]; ?></p>
+              <!--<p class="text-muted"><?php echo $currentUser["Email"]; ?></p>-->
             </div>
             <div class="mobile-menu">
               <ul class="list-inline">
-                <li><a href="timline.html">Tin tức</a></li>
-                <li><a href="timeline-about.html" class="active">Thông tin</a></li>
-                <li><a href="timeline-album.html">Album</a></li>
-                <li><a href="timeline-friends.html">Bạn bè</a></li>
+                  <li><a href="timeline.php?u=<?php echo $UserID?>">Dòng thời gian</a></li>
+                  <li><a href="info.php" class="active">Thông tin</a></li>
+                 
+                  <li><a href="friends.php">Bạn bè</a></li>
               </ul>
               <<!--button class="btn-primary">Add Friend</button>-->
             </div>
@@ -127,7 +127,7 @@
               <!--	<li><i class="icon ion-ios-briefcase-outline"></i><a href="edit-profile-work-edu.html">Education and Work</a></li>
               	<li><i class="icon ion-ios-heart-outline"></i><a href="edit-profile-interests.html">My Interests</a></li>
                 <li><i class="icon ion-ios-settings"></i><a href="edit-profile-settings.html">Account Settings</a></li>-->
-              	<li><i class="icon ion-ios-locked-outline"></i><a href="edit-profile-password.html">Đổi mật khẩu</a></li>
+              	<li><i class="icon ion-ios-locked-outline"></i><a href="changepass.php">Đổi mật khẩu</a></li>
               </ul>
             </div>
             <div class="col-md-7">

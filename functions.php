@@ -29,7 +29,7 @@ function findUserById($id)
 function findUserByEmail($email)
 {
     global $db;
-    $stmt=$db->prepare("SELECT * FROM Users WHERE Email  = ?");
+    $stmt=$db->prepare("SELECT * FROM users WHERE Email  = ?");
     $stmt->execute(array($email));
     return  $stmt->fetch(PDO::FETCH_ASSOC);
 }
@@ -79,28 +79,29 @@ function register($Phone,$Pwd,$FullName,$UrlImage,$Email)
     global $db;
     $code = generateRandomString(5);
     $stmt=$db->prepare("INSERT INTO users (FullName,Pwd,Phone,ImageUrl,Email,IsActived,ActivedCode) VALUES(?,?,?,?,?,?,?)");
-    $stmt->execute(array($FullName,$Pwd,$Phone,$UrlImage,$Email,"false",$code));
-    sendEmail($Email,$FullName,'Kích hoạt tài khoản','Click vào: <strong><a href="http://localhost/doanweb1/'  .'actived.php?code=' .$code .'&email=' .$Email .'"> đây </a> để kích hoạt</strong> ');
-    return $newUserId=$db->lastInsertId();
+    $stmt->execute(array($FullName,$Pwd,$Phone,$UrlImage,$Email,0,$code));
+    $newUserId=$db->lastInsertId();
+    sendEmail($Email,$FullName,'Kích hoạt tài khoản','Click vào: <strong><a href="http://hagiang1990.000webhostapp.com/doan/'  .'actived.php?code=' .$code .'&email=' .$Email .'"> đây </a> để kích hoạt</strong> ');
+    return $newUserId;
 }
 function change_password($newPassword,$id)
 {
     global $db;
     $hashPassword=$newPassword;
-    $stmt=$db->prepare("UPDATE Users SET Pwd=? WHERE UserID=?");
+    $stmt=$db->prepare("UPDATE users SET Pwd=? WHERE UserID=?");
     return $stmt->execute(array($hashPassword,$id));
 }
 
 function UpdateUser($UserID,$FullName, $Email,$Phone)
 {
     global $db;
-    $stmt=$db->prepare("UPDATE Users SET FullName=? , Email = ? , Phone=? WHERE UserID=?");
+    $stmt=$db->prepare("UPDATE users SET FullName=? , Email = ? , Phone=? WHERE UserID=?");
     return $stmt->execute(array($FullName, $Email,$Phone,$UserID));
 }
 function UpdateUser1($UserID,$FullName, $Email, $ImgUrl,$Phone)
 {
     global $db;
-    $stmt=$db->prepare("UPDATE Users SET FullName=? , Email = ? , ImageUrl= ? , Phone=? WHERE UserID=?");
+    $stmt=$db->prepare("UPDATE users SET FullName=? , Email = ? , ImageUrl= ? , Phone=? WHERE UserID=?");
     return $stmt->execute(array($FullName, $Email, $ImgUrl,$Phone,$UserID));
 }
 
@@ -145,7 +146,7 @@ function sendEmail($to, $name, $subject, $content) {
     // Instantiation and passing `true` enables exceptions
     $mail = new PHPMailer(true);
     //Server settings
-    $mail->isSMTP();                                            // Send using SMTP
+    //$mail->isSMTP();                                            // Send using SMTP
     $mail->CharSet    = 'UTF-8';
     $mail->Host       = 'smtp.gmail.com';                    // Set the SMTP server to send through
     $mail->SMTPAuth   = true;                                   // Enable SMTP authentication
@@ -165,11 +166,11 @@ function sendEmail($to, $name, $subject, $content) {
   }
   function activateUser($code) {
     global $db;
-    $stmt = $db->prepare("SELECT * FROM Users WHERE CodeActived = ? AND IsActived = ?");
+    $stmt = $db->prepare("SELECT * FROM users WHERE ActivedCode = ? AND IsActived = ?");
     $stmt->execute(array($code, 0));
     $user = $stmt->fetch(PDO::FETCH_ASSOC);
-    if ($user && $user['CodeActived'] == $code) {
-      $stmt = $db->prepare("UPDATE Users SET CodeActived = ?, IsActived = ? WHERE UserID = ?");
+    if ($user != null && $user['ActivedCode'] == $code) {
+      $stmt = $db->prepare("UPDATE users SET ActivedCode = ?, IsActived = ? WHERE UserID = ?");
       $stmt->execute(array('', 1, $user['UserID']));
       return true;
     }
@@ -195,14 +196,14 @@ function LoadNewFeed($UserID,$pageNum,$limit)
 
 function GetNewFeedByID($NewFeedID) {
     global $db;
-    $stmt = $db->prepare("SELECT * FROM NewFeeds WHERE NewFeedID = ?");
+    $stmt = $db->prepare("SELECT * FROM newfeeds WHERE NewFeedID = ?");
     $stmt->execute(array($NewFeedID));
     return $stmt->fetch(PDO::FETCH_ASSOC);
 }
 function AddNewFeed($UserID, $content, $ImageUrl,$NewFeedType)
 {
     global $db;
-    $stmt=$db->prepare("INSERT INTO NewFeeds (NewFeedContent,UrlImage,IsPrivate,CreatedUser) VALUES(?,?,?,?)");
+    $stmt=$db->prepare("INSERT INTO newfeeds (NewFeedContent,UrlImage,IsPrivate,CreatedUser) VALUES(?,?,?,?)");
     $stmt->execute(array($content, $ImageUrl,$NewFeedType,$UserID));
     $newNewFeedID=$db->lastInsertId();
     return GetNewFeedByID($newNewFeedID);
@@ -210,7 +211,7 @@ function AddNewFeed($UserID, $content, $ImageUrl,$NewFeedType)
 function DelNewFeed($NewFeedID)
 {
     global $db;
-    $stmt=$db->prepare("UPDATE NewFeeds SET IsDeleted = 1 WHERE NewFeedID = ? ");
+    $stmt=$db->prepare("UPDATE newfeeds SET IsDeleted = 1 WHERE NewFeedID = ? ");
     return $stmt->execute(array($NewFeedID));
 }
 function AddLike($NewFeedID,$UserID)
@@ -302,15 +303,16 @@ function AddComment($NewFeedID, $UserID, $CommentContent)
 {
     global $db;
     $stmt=$db->prepare("INSERT INTO comments (CommentContent,NewFeedID,CreatedUser) VALUES(?,?,?)");
-    $stmt->execute(array( $CommentContent,$NewFeedID,$UserID));
+    $stmt->execute(array($CommentContent,$NewFeedID,$UserID));
+    $newID = $db->lastInsertId();
     $newFeed = GetNewFeedByID($NewFeedID);
-    if(intVal($newFeed["CreatedUser"]) != $UserID)
+    if(intVal($newFeed["CreatedUser"]) != $UserID && $newID > 0) 
     {
         $content = "Bình Luận nội dung bài viết của bạn.";
         AddNotify($UserID,intVal($newFeed["CreatedUser"]),2,$content);
     }
     
-    return $db->lastInsertId();
+    return $newID;
 }
 function DelComment($CommentID)
 {
@@ -330,17 +332,62 @@ function AddNotify($fromUserID, $ToUserID, $Type, $Content)
 function GetNotifyByUser($UserID)
 {
     global $db;
-    $stmt=$db->prepare("SELECT un.*,u.FullName,u.ImageUrl FROM users_notifications as un join users u on un.FromUserID = u.UserID WHERE un.ToUserID = ? ORDER BY un.CreatedDate DESC");
+    $stmt=$db->prepare("SELECT un.*,u.FullName,u.ImageUrl FROM users_notifications as un join users u on un.FromUserID = u.UserID WHERE un.ToUserID = ? AND IsComplete = 0 ORDER BY un.CreatedDate DESC");
     $stmt->execute(array($UserID));
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
+function CompleteNotify($id)
+{
+    global $db;
+    $stmt=$db->prepare("UPDATE users_notifications SET IsComplete = 1 WHERE NotificationID = ? ");
+    return  $stmt->execute(array($id));
+}
 
+// Xử lý thông tin kết bạn
+function AddFriend($UserID, $FriendID)
+{
+    global $db;
+    $stmt=$db->prepare("INSERT INTO users_friends (UserID,FriendID,IsAccept,IsFollow) VALUES(?,?,?,?)");
+    $result =  $stmt->execute(array($FriendID,$UserID,0,0));
+    $Friend = findUserById($FriendID);
+    if( $Friend  != null) 
+    {
+        $content = " vừa gửi lời mời kết bạn cho bạn.";
+        AddNotify($UserID,$FriendID,0,$content);
+    }
+    return $result;
+}
+function AcceptFriend($NotificationID,$UserID, $FriendID)
+{
+    global $db;
+    
+    $stmt=$db->prepare("UPDATE users_friends SET IsAccept = 1 , IsFollow = 1  WHERE UserID = ? AND FriendID = ? ");
+    $stmt->execute(array($UserID,$FriendID));
+    CompleteNotify($NotificationID);
+    return  true;
+}
 function Search($keySearch)
 {
-    $data = "%" .$keySearch ."%";
+    $data = "%" .strtoupper($keySearch) ."%";
     global $db;
-    $stmt=$db->prepare("SELECT * FROM Users WHERE Email like ? OR FullName like ? OR Phone = ?");
+    $stmt=$db->prepare("SELECT * FROM users WHERE UPPER(Email) like ? OR UPPER(FullName) like ? OR Phone = ?");
     $stmt->execute(array($data,$data,$data));
     return  $stmt->fetchAll(PDO::FETCH_ASSOC);
 
+}
+function LoadTimeLine($UserID,$pageNum,$limit)
+{
+    global $db;
+    $start=($pageNum-1)*$limit;
+    $stmt=$db->prepare("CALL sp_LoadTimeLine(?,?,?)");
+    $stmt->execute(array($UserID,$start,$limit));
+    return  $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
+function LoadFriend($UserID)
+{
+    global $db;
+    
+    $stmt=$db->prepare("CALL sp_LoadFriend(?)");
+    $stmt->execute(array($UserID));
+    return  $stmt->fetchAll(PDO::FETCH_ASSOC);
 }

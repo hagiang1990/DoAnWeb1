@@ -25,7 +25,7 @@
                         <div class="col-md-3 static">
                             <div class="profile-card">
                                 <img src="img/<?php echo $currentUser["ImageUrl"]?>" alt="user" class="profile-photo" />
-                                <h5><a href="#" class="text-white"><?php echo $currentUser["FullName"];?></a></h5>
+                                <h5><a href="info.php" class="text-white"><?php echo $currentUser["FullName"];?></a></h5>
                                 <a href="#" class="text-white"><i class="ion ion-android-person-add"></i> <?php echo $CountFriend;?> bạn</a>
                             </div>
                             <!--profile card ends-->

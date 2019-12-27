@@ -6,8 +6,9 @@
     $vHost = "http://localhost/doanweb1";
     
     $db=new PDO('mysql:host=localhost;dbname=socialnetwork_db;', 'root', '');
+    $db->exec("set names utf8");
     $page = getPage();
-    if($page != "login" && $page != "actived")
+    if($page != "login" && $page != "actived" && $page != "forgetpass")
     {
         if(isset($_SESSION['USERID'])) {
             $currentUser=findUserById($_SESSION['USERID']);

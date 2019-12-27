@@ -12,7 +12,7 @@
         if(!empty($code) && !empty($Email))
         { 
             $user  = findUserByEmail($Email);
-            if(isset($user)){
+            if($user != null){
                 $isActived = ActivedUser($Email,$code);
                 if($isActived)
                     $msg = "Kich hoạt thành công. Hãy click vào <a href='login.php'>đây</a> để đăng nhập";

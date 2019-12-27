@@ -2,9 +2,11 @@
      require_once 'init.php';
      require_once 'functions.php';
      $UserID = $currentUser["UserID"];
+     $UserView = intVal($_GET["UserView"]);
      $listNewFeed = array();
      $pageNum = intVal($_GET["pagenum"]);
-     $listNewFeed  = LoadNewFeed($UserID,$pageNum,5);
+     $isFriend = GetFriend($UserID,$UserView);
+     $listNewFeed  = LoadTimeLine($UserView,$pageNum,5);
 ?>
 <?php foreach($listNewFeed as $item) { ?>
         <div class="post-content" data-id="<?php echo $item["NewFeedID"]?>">
@@ -49,7 +51,14 @@
                                 <?php 
                                                 $isLike = CheckLike($UserID,$item["NewFeedID"]);
                                            ?>
-                                    <a data-idNewFeed="<?php echo $item["NewFeedID"] ?>" onclick="AddLike(<?php echo $UserID ?>,<?php echo $item["NewFeedID"] ?>,<?php echo (intVal($isLike["NumLike"]) > 0 ? "true":"false")?>)" class="btn <?php if(intVal($isLike["NumLike"]) >0){ echo "text-blue isLike";}else{echo  "text-muted";} ?>" data-num="<?php echo $item["NumLike"];?>">
+                                    <a data-idNewFeed="<?php echo $item["NewFeedID"] ?>"
+                                    <?php if($isFriend != null && $UserView != $UserID){
+                                            if($isFriend["IsAccept"] == 1) {
+                                    ?>
+                                     onclick="AddLike(<?php echo $UserID ?>,<?php echo $item["NewFeedID"] ?>,<?php echo (intVal($isLike["NumLike"]) > 0 ? "true":"false")?>)" 
+                                     
+                                    <?php }}?>
+                                     class="btn <?php if(intVal($isLike["NumLike"]) >0){ echo "text-blue isLike";}else{echo  "text-muted";} ?>" data-num="<?php echo $item["NumLike"];?>">
                                         <i class="icon ion-thumbsup"></i> <span data-idNewFeed="<?php echo $item["NewFeedID"] ?>"> <?php echo $item["NumLike"];?> </span>
                                     </a>
 
@@ -77,6 +86,9 @@
                                 </div>
                                 <div class="line-divider"></div>
                             <?php }?>
+                            <?php if($isFriend != null && $UserView != $UserID){
+                                if($isFriend["IsAccept"] == 1) {
+                            ?>
                             <div class="post-comment" data-idNewFeed="<?php echo $item["NewFeedID"] ?>">
                                 <img src="img/<?php echo $currentUser["ImageUrl"]?>" alt="" class="profile-photo-sm" />
                                 <div class="input-group" style="width:100%">
@@ -89,6 +101,7 @@
 
                                 </div>
                             </div>
+                            <?php } }?>
                 </div>
             </div>
         </div>
