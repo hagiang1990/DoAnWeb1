@@ -391,3 +391,39 @@ function LoadFriend($UserID)
     $stmt->execute(array($UserID));
     return  $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
+// Xử lý hàm lấy tin nhắn
+function LoadMessgerByUser($UserID)
+{
+    global $db;
+    $stmt=$db->prepare("CALL sp_Messager(?)");
+    $stmt->execute(array($UserID));
+    return  $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
+function LoadMessgerDetail($MessagerID)
+{
+    global $db;
+    $stmt=$db->prepare("SELECT d.*,u.FullName,u.ImageUrl FROM messegerdetail d join users u on d.UserID = u.UserID WHERE d.MessagerID = ? ORDER BY d.CreatedDate");
+    $stmt->execute(array($MessagerID));
+    return  $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
+function AddMsg($FromUserID,$ToUserID)
+{
+    global $db;
+    $stmt=$db->prepare("INSERT INTO messeger (FromUserID,ToUserID,CreatedUser) VALUES(?,?,?)");
+    $stmt->execute(array($FromUserID,$ToUserID,$FromUserID));
+    return $db->lastInsertId();
+}
+function AddMsgDetail($UserID,$MsgID,$Content)
+{
+    global $db;
+    $stmt=$db->prepare("INSERT INTO messegerdetail (MessagerID,UserID,Content) VALUES(?,?,?)");
+    $stmt->execute(array($MsgID, $UserID, $Content));
+    return $db->lastInsertId();
+}
+function CheckExistsMsg($UserID)
+{
+    $result = LoadMessgerByUser($UserID);
+    if(count($result) > 0)
+        return true;
+    return false;
+}

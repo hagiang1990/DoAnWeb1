@@ -8,7 +8,9 @@
      $isFriend = GetFriend($UserID,$UserView);
      $listNewFeed  = LoadTimeLine($UserView,$pageNum,5);
 ?>
-<?php foreach($listNewFeed as $item) { ?>
+<?php foreach($listNewFeed as $item) {
+    if( ($UserView != $UserID && $item["IsPrivate"] == -1) || $item["IsPrivate"] != -1 )
+?>
         <div class="post-content" data-id="<?php echo $item["NewFeedID"]?>">
             <?php if($UserID == $item["CreatedUser"]){?>
                 <button onclick="DeleteNewFeed(<?php echo $item["NewFeedID"];?>)" type="button" class="close" data-dismiss="modal" aria-label="Close">

@@ -75,6 +75,14 @@
         $result =AcceptFriend($NotificationID,$UserID, $FriendID);
         return $result;
     }
+    if($function == "ADDMSGD")
+    {
+        $UserID = $_POST["UserID"];
+        $Content = $_POST["Content"];
+        $MsgID = $_POST["ID"];
+        $newID = AddMsgDetail($UserID,$MsgID,$Content);
+        return $newID;
+    }
 
 
 
