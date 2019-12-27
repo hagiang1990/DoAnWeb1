@@ -1618,7 +1618,7 @@ ul.online-users li span.online-dot{
   overflow: visible;
 }
 
-.timeline .post-content::before{
+/*.timeline .post-content::before{
   content: "";
   position: absolute;
   background: none;
@@ -1627,7 +1627,7 @@ ul.online-users li span.online-dot{
   left: -145px;
   border-left: 2px solid #8dc63f;
   top: 15px;
-}
+}*/
 
 .timeline .post-content .post-date{
   position: absolute;

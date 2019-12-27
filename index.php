@@ -3,6 +3,7 @@
     require_once 'functions.php';
     $UserID = $currentUser["UserID"];
     $CountFriend = GetCountFriend($UserID);
+  
 ?>
     <!DOCTYPE html>
     <html lang="en">
@@ -13,9 +14,9 @@
     </head>
 
     <body>
-        <?php include("menu.php") ?>
+        <?php include("menu-top.php") ?>
             <div id="page-contents">
-                <div class="container">
+                <div class="container-fluid">
                     <div class="row">
 
                         <!-- Newsfeed Common Side Bar Left
@@ -23,65 +24,12 @@
                         <div class="col-md-3 static">
                             <div class="profile-card">
                                 <img src="img/<?php echo $currentUser["ImageUrl"]?>" alt="user" class="profile-photo" />
-                                <h5><a href="#" class="text-white"><?php echo $currentUser["FullName"];?></a></h5>
+                                <h5><a href="timeline.php?u=<?php echo $currentUser["UserID"]?>" class="text-white"><?php echo $currentUser["FullName"];?></a></h5>
                                 <a href="#" class="text-white"><i class="ion ion-android-person-add"></i> <?php echo $CountFriend;?> bạn</a>
                             </div>
                             <!--profile card ends-->
-                            <ul class="nav-news-feed">
-                                <li><i class="icon ion-ios-paper"></i>
-                                    <div><a href="#">Tin tức</a></div>
-                                </li>
-
-                                <li><i class="icon ion-ios-people-outline"></i>
-                                    <div><a href="#">Bạn bè</a></div>
-                                </li>
-                                <li><i class="icon ion-chatboxes"></i>
-                                    <div><a href="#">Tin nhắn</a></div>
-                                </li>
-                                <li><i class="icon ion-images"></i>
-                                    <div><a href="#">Hình ảnh</a></div>
-                                </li>
-                                <li><i class="icon ion-ios-videocam"></i>
-                                    <div><a href="#">Thông báo</a></div>
-                                </li>
-                                <li><i class="icon ion-compose"></i>
-                                    <div><a href="info.php">Cập nhật thông tin</a></div>
-                                </li>
-                            </ul>
-                            <!--news-feed links ends-->
-                            <div id="chat-block">
-                                <div class="title">Bạn bè đang online</div>
-                                <!--<ul class="online-users list-inline">
-                                    <li>
-                                        <a href="newsfeed-messages.html" title="Linda Lohan"><img src="http://placehold.it/300x300" alt="user" class="img-responsive profile-photo" /><span class="online-dot"></span></a>
-                                    </li>
-                                    <li>
-                                        <a href="newsfeed-messages.html" title="Sophia Lee"><img src="http://placehold.it/300x300" alt="user" class="img-responsive profile-photo" /><span class="online-dot"></span></a>
-                                    </li>
-                                    <li>
-                                        <a href="newsfeed-messages.html" title="John Doe"><img src="http://placehold.it/300x300" alt="user" class="img-responsive profile-photo" /><span class="online-dot"></span></a>
-                                    </li>
-                                    <li>
-                                        <a href="newsfeed-messages.html" title="Alexis Clark"><img src="http://placehold.it/300x300" alt="user" class="img-responsive profile-photo" /><span class="online-dot"></span></a>
-                                    </li>
-                                    <li>
-                                        <a href="newsfeed-messages.html" title="James Carter"><img src="http://placehold.it/300x300" alt="user" class="img-responsive profile-photo" /><span class="online-dot"></span></a>
-                                    </li>
-                                    <li>
-                                        <a href="newsfeed-messages.html" title="Robert Cook"><img src="http://placehold.it/300x300" alt="user" class="img-responsive profile-photo" /><span class="online-dot"></span></a>
-                                    </li>
-                                    <li>
-                                        <a href="newsfeed-messages.html" title="Richard Bell"><img src="http://placehold.it/300x300" alt="user" class="img-responsive profile-photo" /><span class="online-dot"></span></a>
-                                    </li>
-                                    <li>
-                                        <a href="newsfeed-messages.html" title="Anna Young"><img src="http://placehold.it/300x300" alt="user" class="img-responsive profile-photo" /><span class="online-dot"></span></a>
-                                    </li>
-                                    <li>
-                                        <a href="newsfeed-messages.html" title="Julia Cox"><img src="http://placehold.it/300x300" alt="user" class="img-responsive profile-photo" /><span class="online-dot"></span></a>
-                                    </li>
-                                </ul>-->
-                            </div>
-                            <!--chat block ends-->
+                            <?php include("menu-left.php") ?>
+                            
                         </div>
 
                         <div class="col-md-7">
@@ -141,46 +89,7 @@
 
                         <!-- Newsfeed Common Side Bar Right
           ================================================= -->
-                        <div class="col-md-2 static">
-                            <div class="suggestions" id="sticky-sidebar">
-                                <h4 class="grey">Gợi ý bạn bè</h4>
-                                <!--<div class="follow-user">
-                                    <img src="http://placehold.it/300x300" alt="" class="profile-photo-sm pull-left" />
-                                    <div>
-                                        <h5><a href="timeline.html">Diana Amber</a></h5>
-                                        <a href="#" class="text-green">Add friend</a>
-                                    </div>
-                                </div>
-                                <div class="follow-user">
-                                    <img src="http://placehold.it/300x300" alt="" class="profile-photo-sm pull-left" />
-                                    <div>
-                                        <h5><a href="timeline.html">Cris Haris</a></h5>
-                                        <a href="#" class="text-green">Add friend</a>
-                                    </div>
-                                </div>
-                                <div class="follow-user">
-                                    <img src="http://placehold.it/300x300" alt="" class="profile-photo-sm pull-left" />
-                                    <div>
-                                        <h5><a href="timeline.html">Brian Walton</a></h5>
-                                        <a href="#" class="text-green">Add friend</a>
-                                    </div>
-                                </div>
-                                <div class="follow-user">
-                                    <img src="http://placehold.it/300x300" alt="" class="profile-photo-sm pull-left" />
-                                    <div>
-                                        <h5><a href="timeline.html">Olivia Steward</a></h5>
-                                        <a href="#" class="text-green">Add friend</a>
-                                    </div>
-                                </div>
-                                <div class="follow-user">
-                                    <img src="http://placehold.it/300x300" alt="" class="profile-photo-sm pull-left" />
-                                    <div>
-                                        <h5><a href="timeline.html">Sophia Page</a></h5>
-                                        <a href="#" class="text-green">Add friend</a>
-                                    </div>
-                                </div>-->
-                            </div>
-                        </div>
+                        <?php require_once("Notify.php") ?>
                     </div>
                 </div>
             </div>
@@ -254,7 +163,7 @@
                        
                         $("#LoadNewFeed").append($('<div id="btnLoading" class="spinner-border text-primary"></div>'));
                         $.get("LoadNewFeed.php?pagenum="+ pageNum,function(data){
-                            if(data != " ")
+                            if( data != "    ")
                             {
                                 $("#LoadNewFeed").append(data);
                                 var PageNum = parseInt($("#btnLoadMore").attr("data-page"));

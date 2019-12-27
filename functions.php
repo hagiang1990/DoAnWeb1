@@ -192,6 +192,7 @@ function LoadNewFeed($UserID,$pageNum,$limit)
     $stmt->execute(array($UserID,$start,$limit));
     return  $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
+
 function GetNewFeedByID($NewFeedID) {
     global $db;
     $stmt = $db->prepare("SELECT * FROM NewFeeds WHERE NewFeedID = ?");
@@ -225,6 +226,13 @@ function AddLike($NewFeedID,$UserID)
     {
         $stmt=$db->prepare("INSERT INTO newfeed_like (NewFeedID,UserID) VALUES(?,?)");
         $stmt->execute(array($NewFeedID,$UserID));
+
+        $newFeed = GetNewFeedByID($NewFeedID);
+        if(intVal($newFeed["CreatedUser"]) != $UserID)
+        {
+            $content = "thích nội dung bài viết của bạn.";
+            AddNotify($UserID,intVal($newFeed["CreatedUser"]),2,$content);
+        }
     }
     return GetCountLikeNewFeed($NewFeedID);
 }
@@ -257,6 +265,23 @@ function GetCountFriend($UserID)
     $result = $stmt->fetch(PDO::FETCH_ASSOC);
     return intVal($result["NumFriend"]);
 }
+function ValidateFriend($UserID,$FriendID)
+{
+    global $db;
+    $stmt=$db->prepare("SELECT COUNT(*) as NumFriend FROM users_friends WHERE ((UserID = ? AND FriendID = ? ) OR (UserID = ? AND FriendID = ?)) AND IsAccept = 1 ");
+    $stmt->execute(array($UserID,$FriendID,$FriendID,$UserID));
+    $result = $stmt->fetch(PDO::FETCH_ASSOC);
+    return intVal($result["NumFriend"]);
+}
+function GetFriend($UserID,$FriendID)
+{
+    global $db;
+    $stmt=$db->prepare("SELECT * FROM users_friends WHERE ((UserID = ? AND FriendID = ? ) OR (UserID = ? AND FriendID = ?))");
+    $stmt->execute(array($UserID,$FriendID,$FriendID,$UserID));
+    $result = $stmt->fetch(PDO::FETCH_ASSOC);
+    return $result;
+
+}
 //Các hàm xử lý của bảng comment
 function GetCommentByNewFeed($NewFeedID)
 {
@@ -278,6 +303,13 @@ function AddComment($NewFeedID, $UserID, $CommentContent)
     global $db;
     $stmt=$db->prepare("INSERT INTO comments (CommentContent,NewFeedID,CreatedUser) VALUES(?,?,?)");
     $stmt->execute(array( $CommentContent,$NewFeedID,$UserID));
+    $newFeed = GetNewFeedByID($NewFeedID);
+    if(intVal($newFeed["CreatedUser"]) != $UserID)
+    {
+        $content = "Bình Luận nội dung bài viết của bạn.";
+        AddNotify($UserID,intVal($newFeed["CreatedUser"]),2,$content);
+    }
+    
     return $db->lastInsertId();
 }
 function DelComment($CommentID)
@@ -285,4 +317,30 @@ function DelComment($CommentID)
     global $db;
     $stmt=$db->prepare("UPDATE comments SET IsDeleted = 1 WHERE CommentID = ? ");
     return $stmt->execute(array($CommentID));
+}
+
+// Function xử lý thông báo
+function AddNotify($fromUserID, $ToUserID, $Type, $Content)
+{
+    global $db;
+    $stmt=$db->prepare("INSERT INTO users_notifications (FromUserID,ToUserID,NotificationType,ShortDescription) VALUES(?,?,?,?)");
+    $stmt->execute(array($fromUserID, $ToUserID, $Type, $Content));
+    return $db->lastInsertId();
+}
+function GetNotifyByUser($UserID)
+{
+    global $db;
+    $stmt=$db->prepare("SELECT un.*,u.FullName,u.ImageUrl FROM users_notifications as un join users u on un.FromUserID = u.UserID WHERE un.ToUserID = ? ORDER BY un.CreatedDate DESC");
+    $stmt->execute(array($UserID));
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
+
+function Search($keySearch)
+{
+    $data = "%" .$keySearch ."%";
+    global $db;
+    $stmt=$db->prepare("SELECT * FROM Users WHERE Email like ? OR FullName like ? OR Phone = ?");
+    $stmt->execute(array($data,$data,$data));
+    return  $stmt->fetchAll(PDO::FETCH_ASSOC);
+
 }

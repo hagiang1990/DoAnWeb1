@@ -18,7 +18,7 @@
                 <img src="img/<?php echo $item["UserImage"]?>" alt="user" class="profile-photo-md pull-left" />
                 <div class="post-detail">
                     <div class="user-info">
-                        <h5><a href="timeline.html" class="profile-link"><?php echo $item["FullName"]?></a> </h5>
+                        <h5><a href="timeline.php" class="profile-link"><?php echo $item["FullName"]?></a> </h5>
 
                         <p class="text-muted">
                             <?php echo date_format(date_create($item["CreatedDate"]),"d/m/Y H:i:s");?>

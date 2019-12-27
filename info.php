@@ -4,6 +4,9 @@
     $msg = "";
     $errors= false;
     $newname = "";
+    $UserID = $currentUser["UserID"];
+    $CountFriend = GetCountFriend($UserID);
+   
     if(isset($_POST["btnSave"]))
     {
         // lấy tên file upload
@@ -62,8 +65,8 @@
         <?php require_once("header.php") ?>
     </head>
 <body>
-<?php include("menu.php") ?>
-<div class="container">
+<?php include("menu-top.php") ?>
+<div class="container-fluid">
 
       <!-- Timeline
       ================================================= -->
@@ -82,13 +85,13 @@
               </div>
               <div class="col-md-9">
                 <ul class="list-inline profile-menu">
-                  <li><a href="timeline.html">Tin tức</a></li>
-                  <li><a href="timeline-about.html" class="active">Thông tin</a></li>
-                  <li><a href="timeline-album.html">Album</a></li>
-                  <li><a href="timeline-friends.html">Bạn bè</a></li>
+                  <li><a href="timeline.php">Dòng thời gian</a></li>
+                  <li><a href="info.php" class="active">Thông tin</a></li>
+                 
+                  <li><a href="friends.php">Bạn bè</a></li>
                 </ul>
                 <ul class="follow-me list-inline">
-                  <li>1,299 bạn bè</li>
+                  <li><?php echo $CountFriend;?> bạn bè</li>
                   <!--<li><button class="btn-primary">Add Friend</button></li>-->
                 </ul>
               </div>
@@ -182,37 +185,7 @@
                 </div>
               </div>
             </div>
-            <div class="col-md-2 static">
-              
-              <!--Sticky Timeline Activity Sidebar-->
-              <div id="sticky-sidebar">
-                <h4 class="grey">Sarah's activity</h4>
-                <div class="feed-item">
-                  <div class="live-activity">
-                    <p><a href="#" class="profile-link">Sarah</a> Commended on a Photo</p>
-                    <p class="text-muted">5 mins ago</p>
-                  </div>
-                </div>
-                <div class="feed-item">
-                  <div class="live-activity">
-                    <p><a href="#" class="profile-link">Sarah</a> Has posted a photo</p>
-                    <p class="text-muted">an hour ago</p>
-                  </div>
-                </div>
-                <div class="feed-item">
-                  <div class="live-activity">
-                    <p><a href="#" class="profile-link">Sarah</a> Liked her friend's post</p>
-                    <p class="text-muted">4 hours ago</p>
-                  </div>
-                </div>
-                <div class="feed-item">
-                  <div class="live-activity">
-                    <p><a href="#" class="profile-link">Sarah</a> has shared an album</p>
-                    <p class="text-muted">a day ago</p>
-                  </div>
-                </div>
-              </div>
-            </div>
+            <?php require_once("Notify.php") ?>
           </div>
         </div>
       </div>
@@ -223,7 +196,7 @@
         <div class="container">
             
         </div><!--//main-body-->
-    </div>
+</div>
     <?php require_once("footer.php") ?>
 </body>
 </html>
